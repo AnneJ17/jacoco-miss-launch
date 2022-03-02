@@ -1,0 +1,3 @@
+include ':app'
+include ':coroutinelaunch'
+rootProject.name = "Jacoco Sample App"

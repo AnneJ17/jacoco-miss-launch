@@ -1,0 +1,61 @@
+apply plugin: 'jacoco'
+
+android.libraryVariants.all { variant ->
+    tasks.create(name: "jacoco${variant.name.capitalize()}TestReport", type: JacocoReport, dependsOn: ["test${variant.name.capitalize()}UnitTest"]) {
+
+        def fileFilter = [
+                '**/R.class',
+                '**/R$*.class',
+                '**/BuildConfig.*',
+                '**/Manifest*.*',
+                '**/*Test*.*',
+                '**/com/example/databinding/*',
+                '**/com/example/generated/callback/*',
+                '**/android/databinding/*',
+                '**/androidx/databinding/*',
+                '**/di/module/*',
+                '**/*MapperImpl*.*',
+                '**/*$ViewInjector*.*',
+                '**/*$ViewBinder*.*',
+                '**/BuildConfig.*',
+                '**/*Component*.*',
+                '**/*BR*.*',
+                '**/Manifest*.*',
+                '**/*$Lambda$*.*',
+                '**/*Companion*.*',
+                '**/*Module.*',
+                '**/*Dagger*.*',
+                '**/*MembersInjector*.*',
+                '**/*_Factory*.*',
+                '**/*_Provide*Factory*.*',
+                '**/*Extensions*.*',
+                '**/*$Result.*', /* filtering `sealed` and `data` classes */
+                '**/*$Result$*.*',/* filtering `sealed` and `data` classes */
+                '**/*Fragment*.*',/* filter Android UI Classes */
+                '**/*Activity*.*',/* filter Android UI Classes */
+                '**/*Adapter*.*',/* filter Android UI Classes */
+                '**/*ViewPager*.*',/* filter Android UI Classes */
+                '**/*ViewHolder*.*',/* filter Android UI Classes */
+                '**/*Application*.*',/* filter Android UI Classes */
+        ]
+
+        reports {
+            html.enabled = true
+            xml.enabled = true
+            csv.enabled = false
+        }
+
+        classDirectories.setFrom(files([
+                fileTree(dir: "$project.rootDir/coroutinelaunch/build/tmp/kotlin-classes/${variant.name}", excludes: fileFilter),
+        ]))
+
+        def coverageSourceDirs = ["$project.rootDir/coroutinelaunch/src/main/java",]
+        additionalSourceDirs.setFrom(files(coverageSourceDirs))
+        sourceDirectories.setFrom(files(coverageSourceDirs))
+
+        executionData(files([
+                "$project.rootDir/coroutinelaunch/build/jacoco/test${variant.name.capitalize()}UnitTest.exec"
+        ]))
+
+    }
+}

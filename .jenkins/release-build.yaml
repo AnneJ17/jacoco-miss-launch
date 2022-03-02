@@ -1,0 +1,97 @@
+jenkins:
+  agent: "LINUX"
+  pipeline:
+    version: "master"
+  tools:
+    java: "1.11.0"
+build:
+  rootdirectory: "."
+  parallel: false
+  commands:
+    - type: android
+      command: "clean"
+      file: "build.gradle"
+    - type: android
+      command: ":coroutinelaunch:lintRelease"
+      file: "build.gradle"
+    - type: android
+      command: ":coroutinelaunch:testReleaseUnitTest"
+      file: "build.gradle"
+    - type: android
+      command: ":coroutinelaunch:assembleRelease"
+      file: "build.gradle"
+    - type: android
+      command: ":coroutinelaunch:jacocoReleaseTestReport"
+      file: "build.gradle"
+    - type: android
+      command: ":coroutinelaunch:dokkaHtml"
+      file: "build.gradle"
+    - type: android
+      command: ":coroutinelaunch:publishReleasePublicationToMavenLocal :coroutinelaunch:moveReleasePomToOutputDir"
+      file: "build.gradle"
+post:
+  autoTriggerDeploy: true
+  commands:
+    - command: "archiveArtifacts"
+      when: success
+      options:
+        artifacts: "coroutinelaunch/build/outputs/aar/*"
+        fingerprint: false
+        groupId: "com.fitb"
+        artifactId: "coroutinelaunch"
+        versionPrefix: "0.0.1"
+      addGroupIdFolderToJFrog: true
+      addArtifactIdFolderToJFrog: true
+      addVersionFolderToJFrog: true
+    - command: "sonarqube"
+      setup-commands:
+        - type: unstash
+          name: "workspace-files"
+      sourceCode: "coroutinelaunch/src/main"
+      when: success
+      options:
+        sonarProperties: >-
+          -Dsonar.tests=coroutinelaunch/src/test
+          -Dsonar.java.binaries=coroutinelaunch/build/tmp/kotlin-classes
+          -Dsonar.coverage.jacoco.xmlReportPaths=coroutinelaunch/build/reports/jacoco/jacocoReleaseTestReport/jacocoReleaseTestReport.xml
+          -Dsonar.java.source=1.8
+          -Dsonar.junit.reportPaths=coroutinelaunch/build/test-results/testReleaseUnitTest
+          -Dsonar.verbose=true
+          -Dsonar.language=kotlin
+          -Dsonar.sourceEncoding=UTF-8
+          -Dsonar.coverage.exclusions=**/*Activity*.kt,**/*Fragment*.kt,**/*Adapter*.kt,**/AndroidManifest.xml,**/network/*,**/ViewUtil.kt,**/ErrorViewState.kt
+        failWhenSonarFails: true
+    - command: "publishHTML"
+      setup-commands:
+        - type: unstash
+          name: "workspace-files"
+      when: success
+      reports:
+        - reportName: "Test Report"
+          htmlFilesDir: "coroutinelaunch/build/reports/tests/testReleaseUnitTest"
+          htmlFiles: "index.html"
+          allowMissing: false
+          alwaysLinkToLastBuild: true
+          keepAll: false
+          htmlFilesTitle: "UnitTestReport"
+        - reportName: "Code Coverage"
+          htmlFilesDir: "coroutinelaunch/build/reports/jacoco/jacocoReleaseTestReport/html"
+          htmlFiles: "index.html"
+          allowMissing: true
+          alwaysLinkToLastBuild: true
+          keepAll: false
+          htmlFilesTitle: "JacocoCoverageReport"
+        - reportName: "Lint"
+          htmlFilesDir: "coroutinelaunch/build/reports"
+          htmlFiles: "lint-results-release.html"
+          allowMissing: true
+          alwaysLinkToLastBuild: true
+          keepAll: false
+          htmlFilesTitle: "LintReport"
+        - reportName: "Docs"
+          htmlFilesDir: "coroutinelaunch/build/docs"
+          htmlFiles: "coroutinelaunch/index.html"
+          allowMissing: true
+          alwaysLinkToLastBuild: true
+          keepAll: false
+          htmlFilesTitle: "DokkaDocs"

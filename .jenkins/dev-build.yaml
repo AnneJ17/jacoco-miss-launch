@@ -1,0 +1,65 @@
+jenkins:
+  agent: "LINUX"
+  pipeline:
+    version: "master"
+  tools:
+    java: "1.11.0"
+build:
+  rootdirectory: "."
+  parallel: false
+  commands:
+    - type: android
+      command: "clean"
+      file: "build.gradle"
+    - type: android
+      command: ":coroutinelaunch:lintDebug"
+      file: "build.gradle"
+    - type: android
+      command: ":coroutinelaunch:testDebugUnitTest"
+      file: "build.gradle"
+    - type: android
+      command: ":coroutinelaunch:assembleDebug"
+      file: "build.gradle"
+    - type: android
+      command: ":coroutinelaunch:jacocoDebugTestReport"
+      file: "build.gradle"
+    - type: android
+      command: ":coroutinelaunch:dokkaHtml"
+      file: "build.gradle"
+post:
+  autoTriggerDeploy: true
+  commands:
+    - command: "publishHTML"
+      setup-commands:
+        - type: unstash
+          name: "workspace-files"
+      when: success
+      reports:
+        - reportName: "Test Report"
+          htmlFilesDir: "coroutinelaunch/build/reports/tests/testDebugUnitTest"
+          htmlFiles: "index.html"
+          allowMissing: false
+          alwaysLinkToLastBuild: true
+          keepAll: false
+          htmlFilesTitle: "UnitTestReport"
+        - reportName: "Code Coverage"
+          htmlFilesDir: "coroutinelaunch/build/reports/jacoco/jacocoDebugTestReport/html"
+          htmlFiles: "index.html"
+          allowMissing: true
+          alwaysLinkToLastBuild: true
+          keepAll: false
+          htmlFilesTitle: "JacocoCoverageReport"
+        - reportName: "Lint"
+          htmlFilesDir: "coroutinelaunch/build/reports"
+          htmlFiles: "lint-results-debug.html"
+          allowMissing: true
+          alwaysLinkToLastBuild: true
+          keepAll: false
+          htmlFilesTitle: "LintReport"
+        - reportName: "Docs"
+          htmlFilesDir: "coroutinelaunch/build/docs"
+          htmlFiles: "coroutinelaunch/index.html"
+          allowMissing: true
+          alwaysLinkToLastBuild: true
+          keepAll: false
+          htmlFilesTitle: "DokkaDocs"
