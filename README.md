@@ -10,4 +10,4 @@ This repo is created to reproduce this potential [bug](https://github.com/jacoco
 ### Actual behaviour
 The report says 2 of 3 branches missed for `viewModelScope.launch { ... }` block.
 
-<img width="776" alt="image" src="https://user-images.githubusercontent.com/48440224/156380466-6bfd8f14-da4e-4465-9113-2c7f1c534ada.png">
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/48440224/156383320-7ea43fab-24f3-42b2-a603-996737af5875.png">
