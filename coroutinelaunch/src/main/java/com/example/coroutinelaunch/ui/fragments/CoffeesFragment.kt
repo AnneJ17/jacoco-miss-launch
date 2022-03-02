@@ -9,13 +9,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coroutinelaunch.R
 import com.example.coroutinelaunch.databinding.FragmentCoffeesBinding
-import com.example.coroutinelaunch.model.CoffeeItem
 import com.example.coroutinelaunch.network.GoalRepository
 import com.example.coroutinelaunch.ui.adapter.CoffeeListAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class CoffeesFragment : Fragment(R.layout.fragment_coffees) {
 
@@ -45,7 +43,6 @@ class CoffeesFragment : Fragment(R.layout.fragment_coffees) {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.coffeesFlow.collect { coffees ->
-                    Timber.tag("Anne").d("list: $coffees")
                     listAdapter.coffeeList = coffees
                 }
             }

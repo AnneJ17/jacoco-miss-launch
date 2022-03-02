@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.coroutinelaunch.R
 import com.example.coroutinelaunch.databinding.ItemViewCoffeeBinding
 import com.example.coroutinelaunch.model.CoffeeItem
-import timber.log.Timber
 
 class CoffeeListAdapter : RecyclerView.Adapter<CoffeeListAdapter.CoffeesViewHolder>() {
 
@@ -18,7 +17,6 @@ class CoffeeListAdapter : RecyclerView.Adapter<CoffeeListAdapter.CoffeesViewHold
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoffeesViewHolder {
-        Timber.tag("Anne==").d("onCreateViewHolder")
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_view_coffee, parent, false)
 
@@ -26,13 +24,11 @@ class CoffeeListAdapter : RecyclerView.Adapter<CoffeeListAdapter.CoffeesViewHold
     }
 
     override fun getItemCount(): Int {
-        Timber.tag("Anne").d("**${coffeeList.size}")
         return coffeeList.size
     }
 
     override fun onBindViewHolder(holder: CoffeesViewHolder, position: Int) {
         val item = coffeeList[position]
-        Timber.tag("Anne==").d("ITEM---$item")
         holder.binding.apply {
             coffeeTitle.text = item.title
             coffeeDescription.text = item.description

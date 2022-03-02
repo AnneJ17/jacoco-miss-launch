@@ -8,7 +8,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class CoffeesViewModel(
     private val repo: GoalRepository,
@@ -21,7 +20,6 @@ class CoffeesViewModel(
     fun fetchGoals() {
         viewModelScope.launch(ioDispatcher) {
             val response = repo.getCoffees()
-            Timber.tag("Anne*").d("${response.body()}")
             response.body()?.let {
                 _coffees.value = it
             }
