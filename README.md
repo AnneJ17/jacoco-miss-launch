@@ -17,3 +17,5 @@ The report says 2 of 3 branches missed for `viewModelScope.launch { ... }` block
 - `cd jacoco-miss-launch`
 - `./gradlew ":coroutinelaunch:jacocoDebugTestReport"`
 - `open coroutinelaunch/build/reports/jacoco/jacocoDebugTestReport/html/index.html .`
+
+This is the [line](https://github.com/AnneJ17/jacoco-miss-launch/blob/a007ffdcab5834f6383d1ab02fccd0773c1c6467/coroutinelaunch/src/main/java/com/example/coroutinelaunch/ui/fragments/CoffeesViewModel.kt#L21) where I have the  `viewmodelScope.launch`. 
