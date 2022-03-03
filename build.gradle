@@ -3,10 +3,7 @@ buildscript {
     ext.kotlin_version = "1.6.10"
 
     project.ext {
-        artifactoryHost = project.hasProperty('artifactoryHost') ? project.getProperty('artifactoryHost') : 'jfrog.info53.com'
-        artifactoryBase = "https://" + artifactoryHost + "/artifactory"
-        fitbRepoName = project.hasProperty('fitbRepoName') ? project.getProperty('fitbRepoName') : 'fitb-development-virtual'
-        mavenRepo = artifactoryBase + "/" + fitbRepoName
+        mavenRepo = "https://repo1.maven.org/maven2/"
     }
 
     repositories {
