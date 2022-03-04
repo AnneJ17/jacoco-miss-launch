@@ -1,4 +1,5 @@
 apply plugin: 'jacoco'
+jacoco.toolVersion = '0.8.7'
 
 android.libraryVariants.all { variant ->
     tasks.create(name: "jacoco${variant.name.capitalize()}TestReport", type: JacocoReport, dependsOn: ["test${variant.name.capitalize()}UnitTest"]) {
